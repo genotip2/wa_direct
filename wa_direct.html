@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WA Direct Link Generator</title>
+    <style>
+        /* CSS untuk Tampilan */
+        :root {
+            --wa-green: #25D366;
+            --wa-dark: #128C7E;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .icon-wa {
+            font-size: 50px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: bold;
+        }
+
+        /* Menggunakan type text agar paste berfungsi lancar di semua browser */
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--wa-green);
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-send {
+            background-color: var(--wa-green);
+            color: white;        }
+
+        .btn-send:hover {
+            background-color: var(--wa-dark);
+        }
+
+        .btn-paste {
+            background-color: #e4e6eb;
+            color: #333;
+        }
+
+        .btn-paste:hover {
+            background-color: #d8dadf;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #555;
+            word-break: break-all;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <span class="icon-wa"></span>
+        <h2>WA Direct</h2>
+        
+        <div class="input-group">
+            <label for="phoneNumber">Nomor WhatsApp</label>
+            <!-- Type diubah ke text agar paste tidak diblokir browser -->
+            <input type="text" id="phoneNumber" placeholder="Paste atau ketik nomor (08xx / 628xx)">
+        </div>
+
+        <div class="input-group">
+            <label for="message">Pesan (Opsional)</label>
+            <textarea id="message" placeholder="Halo, saya ingin bertanya..."></textarea>
+        </div>
+
+        <div class="btn-group">
+            <!-- Tombol diganti menjadi Paste -->
+            <button class="btn-paste" onclick="pasteFromClipboard()">Paste</button>
+            <button class="btn-send" onclick="openWhatsApp()">Kirim WA</button>
+        </div>
+        <div id="resultBox" class="result-box"></div>
+    </div>
+
+    <script>
+        // Fungsi untuk mengambil nomor dari input dan membersihkannya
+        function getRawNumber() {
+            let num = document.getElementById('phoneNumber').value;
+            // Hapus semua karakter selain angka
+            return num.replace(/\D/g, ''); 
+        }
+
+        // Fungsi Logika Format Nomor (Sesuai Request)
+        function formatNumberForWA(rawNumber) {
+            let num = rawNumber;
+
+            // 1. Jika sudah diawali 62, jangan rubah apapun
+            if (num.startsWith('62')) {
+                return num;
+            } 
+            // 2. Jika diawali 0, ganti dengan 62
+            else if (num.startsWith('0')) {
+                return '62' + num.substring(1);
+            } 
+            // 3. Jika diawali 8 (dan bukan 62 atau 0), tambah 62 di depan
+            else if (num.startsWith('8')) {
+                return '62' + num;
+            }
+            
+            // Fallback: Kembalikan apa adanya jika tidak memenuhi kriteria di atas
+            return num;
+        }
+
+        // Fungsi Paste dari Clipboard
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                // Bersihkan semua karakter selain angka
+                const cleanText = text.replace(/\D/g, '');
+                
+                if(cleanText) {
+                    document.getElementById('phoneNumber').value = cleanText;
+                    // Efek visual kecil (opsional)
+                    document.getElementById('phoneNumber').style.borderColor = "#25D366";
+                    setTimeout(() => {
+                        document.getElementById('phoneNumber').style.borderColor = "#ddd";
+                    }, 1000);
+                } else {
+                    alert("Clipboard kosong atau berisi teks non-angka.");
+                }
+            } catch (err) {                alert('Gagal mengakses clipboard. Pastikan Anda memberikan izin akses.');
+                console.error('Gagal paste: ', err);
+            }
+        }
+
+        function generateURL() {
+            let rawNumber = getRawNumber();
+            
+            if (!rawNumber) {
+                alert("Mohon masukkan atau paste nomor WhatsApp!");
+                return null;
+            }
+
+            // Terapkan logika format nomor
+            let finalNumber = formatNumberForWA(rawNumber);
+            let message = document.getElementById('message').value;
+            let encodedMessage = encodeURIComponent(message);
+            
+            return `https://wa.me/${finalNumber}?text=${encodedMessage}`;
+        }
+
+        function openWhatsApp() {
+            let url = generateURL();
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
