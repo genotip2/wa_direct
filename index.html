@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>WA Direct</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f0f2f5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="WA Direct">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     /* Konstanta Warna */
     :root {
@@ -12,273 +21,81 @@
       --bg-color: #f0f2f5;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    /* Container meniru SafeAreaView & ScrollView */
-    .safe-area {
-      width: 100%;
-      max-width: 430px;
-      /* Jarak atas (padding-top) dikurangi menjadi 8vh agar posisinya naik ke atas */
-      padding: 8vh 24px 24px 24px; 
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Ikon dan Judul */
-    .icon-circle {
-      align-self: center;
-      width: 72px;
-      height: 72px;
-      border-radius: 36px;
-      background-color: #eafbf0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-
-    .icon {
-      font-size: 38px;
-    }
-
-    .title {
-      color: #333;
-      font-size: 28px;
-      line-height: 34px;
-      font-weight: 800;
-      text-align: center;
-      margin: 0 0 6px 0;
-    }
-
-    .subtitle {
-      color: #777;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: center;
-      margin: 0 0 24px 0;
-    }
-
-    /* Input Group */
-    .input-group {
-      margin-bottom: 8px;
-    }
-
-    .label {
-      display: block;
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 7px;
-      font-weight: 700;
-    }
-
-    .input-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input {
-      width: 100%;
-      min-height: 50px;
-      padding: 12px 14px;
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      font-size: 16px;
-      color: #222;
-      background-color: #fff;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .input:focus {
-      border-color: var(--wa-green);
-    }
-
-    .input::placeholder {
-      color: #999;
-    }
-
-    .input-with-clear {
-      padding-right: 42px;
-    }
-
-    /* Tombol Clear (Silang) */
-    .clear-button {
-      position: absolute;
-      right: 12px;
-      width: 24px;
-      height: 24px;
-      border-radius: 12px;
-      background-color: #e4e6eb;
-      display: none; /* Disembunyikan secara default */
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: none;
-      padding: 0;
-    }
-
-    .clear-button:active {
-      opacity: 0.6;
-    }
-
-    .clear-text {
-      color: #666;
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 14px;
-    }
-
-    /* Feedback Paste */
-    .feedback-container {
-      height: 20px;
-      display: flex;
-      align-items: center;
-      margin-top: 4px;
-    }
-
-    .feedback {
-      color: var(--wa-dark);
-      font-size: 12px;
-      font-weight: 600;
-      display: none;
-    }
-
-    /* Textarea Pesan */
-    .message-input {
-      height: 110px;
-      resize: none;
-    }
-
-    /* Grup Tombol */
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 32px;
-    }
-
-    .button {
-      flex: 1;
-      min-height: 50px;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 800;
-      transition: transform 0.1s, opacity 0.1s;
-    }
-
-    .button:active {
-      opacity: 0.78;
-      transform: scale(0.99);
-    }
-
-    .btn-paste {
-      background-color: #e4e6eb;
-      color: #333;
-    }
-
-    .btn-send {
-      background-color: var(--wa-green);
-      color: #fff;
-    }
-
-    .footer-text {
-      margin-top: 16px;
-      color: #888;
-      font-size: 11px;
-      text-align: center;
-      line-height: 16px;
-    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-color); margin: 0; padding: 0; display: flex; justify-content: center; min-height: 100vh; }
+    
+    .safe-area { width: 100%; max-width: 430px; padding: 8vh 24px 24px 24px; display: flex; flex-direction: column; }
+    .icon-circle { align-self: center; width: 72px; height: 72px; border-radius: 36px; background-color: #eafbf0; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .icon { font-size: 38px; }
+    .title { color: #333; font-size: 28px; font-weight: 800; text-align: center; margin: 0 0 6px 0; }
+    .subtitle { color: #777; font-size: 14px; text-align: center; margin: 0 0 24px 0; }
+    .input-group { margin-bottom: 8px; }
+    .label { display: block; font-size: 14px; color: #666; margin-bottom: 7px; font-weight: 700; }
+    .input-container { position: relative; display: flex; align-items: center; }
+    .input { width: 100%; min-height: 50px; padding: 12px 14px; border: 1px solid #ddd; border-radius: 9px; font-size: 16px; outline: none; }
+    .input:focus { border-color: var(--wa-green); }
+    .input-with-clear { padding-right: 42px; }
+    .clear-button { position: absolute; right: 12px; width: 24px; height: 24px; border-radius: 12px; background-color: #e4e6eb; display: none; align-items: center; justify-content: center; cursor: pointer; border: none; }
+    .clear-text { color: #666; font-size: 12px; font-weight: bold; }
+    .feedback-container { height: 20px; display: flex; align-items: center; margin-top: 4px; }
+    .feedback { color: var(--wa-dark); font-size: 12px; font-weight: 600; display: none; }
+    .message-input { height: 110px; resize: none; }
+    .btn-group { display: flex; gap: 10px; margin-top: 32px; }
+    .button { flex: 1; min-height: 50px; border-radius: 9px; border: none; font-size: 16px; font-weight: 800; cursor: pointer; }
+    .btn-paste { background-color: #e4e6eb; color: #333; }
+    .btn-send { background-color: var(--wa-green); color: #fff; }
+    .footer-text { margin-top: 16px; color: #888; font-size: 11px; text-align: center; }
   </style>
 </head>
 <body>
 
   <div class="safe-area">
-    <!-- Ikon dan Judul Utama -->
-    <div class="icon-circle">
-      <span class="icon">💬</span>
-    </div>
-
+    <div class="icon-circle"><span class="icon">💬</span></div>
     <h1 class="title">WA Direct</h1>
     <p class="subtitle">Kirim chat WhatsApp tanpa menyimpan kontak.</p>
 
-    <!-- Form Input Nomor WhatsApp -->
     <div class="input-group">
       <label class="label">Nomor WhatsApp</label>
-      
       <div class="input-container">
-        <input 
-          type="tel" 
-          id="phoneInput" 
-          class="input input-with-clear" 
-          placeholder="Paste atau ketik nomor (08xx / 628xx)"
-          autocomplete="off"
-        >
-        
-        <button id="clearBtn" class="clear-button">
-          <span class="clear-text">✕</span>
-        </button>
+        <input type="tel" id="phoneInput" class="input input-with-clear" placeholder="Paste atau ketik nomor (08xx / 628xx)" autocomplete="off">
+        <button id="clearBtn" class="clear-button"><span class="clear-text">✕</span></button>
       </div>
-
-      <!-- Ruang Tetap untuk Feedback Paste -->
       <div class="feedback-container">
         <span id="pasteFeedback" class="feedback">Nomor berhasil ditempel</span>
       </div>
     </div>
 
-    <!-- Form Input Pesan -->
     <div class="input-group">
       <label class="label">Pesan (Opsional)</label>
-      <textarea 
-        id="messageInput" 
-        class="input message-input" 
-        placeholder="Halo, saya ingin bertanya..."
-      ></textarea>
+      <textarea id="messageInput" class="input message-input" placeholder="Halo, saya ingin bertanya..."></textarea>
     </div>
 
-    <!-- Tombol Aksi -->
     <div class="btn-group">
       <button id="pasteBtn" class="button btn-paste">Paste</button>
       <button id="sendBtn" class="button btn-send">Kirim WA</button>
     </div>
-
     <p class="footer-text">Format otomatis: 08xx → 628xx • 8xx → 628xx</p>
   </div>
 
   <script>
-    function getRawNumber(value) {
-      return value.replace(/\D/g, '');
+    // Registrasi Service Worker untuk PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker terdaftar', reg))
+          .catch(err => console.log('Service Worker gagal', err));
+      });
     }
 
+    // Logika Aplikasi
+    function getRawNumber(value) { return value.replace(/\D/g, ''); }
     function formatNumberForWA(rawNumber) {
-      const num = getRawNumber(rawNumber);
-
-      if (num.startsWith('62')) return num;
-      if (num.startsWith('0')) return `62${num.substring(1)}`;
-      if (num.startsWith('8')) return `62${num}`;
-
-      return num;
+      if (rawNumber.startsWith('62')) return rawNumber;
+      if (rawNumber.startsWith('0')) return `62${rawNumber.substring(1)}`;
+      if (rawNumber.startsWith('8')) return `62${rawNumber}`;
+      return rawNumber;
     }
-
-    function isPlausibleIndonesianWaNumber(number) {
-      return /^628\d{7,12}$/.test(number);
-    }
+    function isPlausibleIndonesianWaNumber(number) { return /^628\d{7,12}$/.test(number); }
 
     const phoneInput = document.getElementById('phoneInput');
     const messageInput = document.getElementById('messageInput');
@@ -288,74 +105,44 @@
     const sendBtn = document.getElementById('sendBtn');
 
     function updateClearButton() {
-      if (phoneInput.value || messageInput.value) {
-        clearBtn.style.display = 'flex';
-      } else {
-        clearBtn.style.display = 'none';
-      }
+      clearBtn.style.display = (phoneInput.value || messageInput.value) ? 'flex' : 'none';
     }
 
     phoneInput.addEventListener('input', (e) => {
-      const rawText = getRawNumber(e.target.value);
-      e.target.value = rawText; 
+      e.target.value = getRawNumber(e.target.value); 
       updateClearButton();
     });
-
     messageInput.addEventListener('input', updateClearButton);
 
     clearBtn.addEventListener('click', () => {
-      phoneInput.value = '';
-      messageInput.value = '';
-      updateClearButton();
-      phoneInput.focus();
+      phoneInput.value = ''; messageInput.value = '';
+      updateClearButton(); phoneInput.focus();
     });
 
     pasteBtn.addEventListener('click', async () => {
       try {
         const text = await navigator.clipboard.readText();
         const cleanText = getRawNumber(text);
-
-        if (!cleanText) {
-          alert('Clipboard kosong\n\nClipboard tidak berisi nomor yang bisa digunakan.');
-          return;
-        }
-
+        if (!cleanText) return alert('Clipboard kosong\n\nTidak ada nomor yang bisa digunakan.');
         phoneInput.value = cleanText;
         updateClearButton();
-
         pasteFeedback.style.display = 'block';
-        setTimeout(() => {
-          pasteFeedback.style.display = 'none';
-        }, 1200);
-
+        setTimeout(() => pasteFeedback.style.display = 'none', 1200);
       } catch (error) {
-        console.error('Gagal paste:', error);
-        alert('Tidak dapat mengakses clipboard\n\nPastikan izin clipboard diizinkan oleh browser lalu coba lagi.');
+        alert('Gagal paste\n\nPastikan izin clipboard diizinkan oleh browser.');
       }
     });
 
     sendBtn.addEventListener('click', () => {
       const rawNumber = getRawNumber(phoneInput.value);
-
-      if (!rawNumber) {
-        alert('Nomor belum diisi\n\nMohon masukkan atau paste nomor WhatsApp.');
-        return;
-      }
-
+      if (!rawNumber) return alert('Nomor belum diisi.');
       const finalNumber = formatNumberForWA(rawNumber);
-
-      if (!isPlausibleIndonesianWaNumber(finalNumber)) {
-        alert('Nomor tidak valid\n\nGunakan nomor Indonesia seperti 08xxxxxxxxxx, 8xxxxxxxxxx, atau 628xxxxxxxxxx.');
-        return;
-      }
-
-      const message = messageInput.value;
-      const encodedMessage = encodeURIComponent(message);
+      if (!isPlausibleIndonesianWaNumber(finalNumber)) return alert('Nomor tidak valid.');
       
-      const webUrl = `https://wa.me/${finalNumber}${message ? `?text=${encodedMessage}` : ''}`;
+      const message = messageInput.value;
+      const webUrl = `https://wa.me/${finalNumber}${message ? `?text=${encodeURIComponent(message)}` : ''}`;
       window.open(webUrl, '_blank');
     });
   </script>
-
 </body>
 </html>
